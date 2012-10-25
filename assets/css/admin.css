@@ -1,0 +1,38 @@
+/* =Column CSS
+-------------------------------------------------------------- */
+.cpum-divider {
+	display: inline-block;
+	width: 14px;
+	height: 12px;
+	background: transparent url(../images/square.png) no-repeat 50% 7px;
+}
+span.cpum-editor,
+span.cpum-featured,
+span.cpum-custom_field {
+	display: inline-block;
+	height: 16px;
+	width: 16px;
+	padding-right: 4px;
+	vertical-align: bottom;
+	background: transparent url(../images/featured.png) no-repeat 0 0;
+}
+span.cpum-editor {
+	background: transparent url(../images/attach.png) no-repeat 0 0;
+}
+span.cpum-custom_field {
+	background: transparent url(../images/custom.png) no-repeat 0 0;
+}
+a.cpum-editor,
+a.cpum-featured,
+a.cpum-custom_field {
+	text-decoration: none;
+}
+a.cpum-featured {
+	/* color: green; */
+}
+a.cpum-featured:hover {
+	color: #D54E21;
+}
+#icon-used-media {
+	background: transparent url('../images/icon.png') no-repeat 0 0;
+}
