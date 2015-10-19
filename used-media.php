@@ -33,29 +33,28 @@ define( 'CPUM_SLUG', 		'used-media' );
 define( 'CPUM_URL', 		plugins_url('', __FILE__) );
 
 // After saving the post we want to check which attachments are being used and add the respective post ID.
-add_action('save_post', array('Codepress_Used_Media', 'add_postid_to_attachments'),10 ,2);
+add_action('save_post', array( 'Codepress_Used_Media', 'add_postid_to_attachments' ),10 ,2);
 
 // After deleting a post we will 'remove' the attachments
-add_action('delete_post', array('Codepress_Used_Media', 'delete_postid_from_attachments'),10 ,1);
+add_action('delete_post', array( 'Codepress_Used_Media', 'delete_postid_from_attachments' ),10 ,1);
 
 // Add Post Titles to attachment edit screen
-add_filter('attachment_fields_to_edit', array('Codepress_Used_Media', 'add_post_titles_to_attachment_edit'), 10, 2);
+add_filter('attachment_fields_to_edit', array( 'Codepress_Used_Media', 'add_post_titles_to_attachment_edit' ), 10, 2);
 
 // register settings menu
-add_action( 'admin_menu', array('Codepress_Used_Media', 'settings_menu') );
-add_action( 'admin_init', array('Codepress_Used_Media', 'handle_requests') );
+add_action( 'admin_menu', array( 'Codepress_Used_Media', 'settings_menu' ) );
+add_action( 'admin_init', array( 'Codepress_Used_Media', 'handle_requests' ) );
 
 // register columns
-add_filter( 'manage_media_columns', array('Codepress_Used_Media', 'add_used_by_column_heading'), 1, 1 );
-add_action( 'manage_media_custom_column', array('Codepress_Used_Media', 'manage_used_by_column_value'), 10, 2 );
+add_filter( 'manage_media_columns', array( 'Codepress_Used_Media', 'add_used_by_column_heading' ), 1, 1 );
+add_action( 'manage_media_custom_column', array( 'Codepress_Used_Media', 'manage_used_by_column_value' ), 10, 2 );
 
 // styling & scripts
-add_action( 'admin_enqueue_scripts' , array('Codepress_Used_Media', 'scripts') );
+add_action( 'admin_enqueue_scripts' , array( 'Codepress_Used_Media', 'scripts' ) );
 
 // warning message
-add_filter( 'media_row_actions', array('Codepress_Used_Media', 'change_delete_warning'), 10, 3);
-
-add_filter( 'plugin_action_links',  array( 'Codepress_Used_Media', 'add_settings_link'), 1, 2);
+add_filter( 'media_row_actions', array( 'Codepress_Used_Media', 'change_delete_warning' ), 10, 3);
+add_filter( 'plugin_action_links',  array( 'Codepress_Used_Media', 'add_settings_link' ), 1, 2);
 
 /**
  * Template functions
@@ -93,7 +92,7 @@ class Codepress_Used_Media
 	 */
     public static function add_postid_to_attachments($post_id, $post)
     {
-        if ( $post->post_type == 'revision' )
+        if ( in_array( $post->post_type, array( 'revision', 'nav_menu_item', 'attachment' ) ) )
             return false;
 		
 		// remove post ID from all attachments
@@ -136,27 +135,26 @@ class Codepress_Used_Media
 			   delete_post_meta($attachment_id, self::$key, $post_id);
             }           
         }
-    }  
+    }
     
     /**
 	 * Get attachments from content
 	 *
 	 * @since     0.1
 	 */
-    private static function get_attachments_from_document($content)
+    private static function get_attachments_from_document( $content )
     {
-        if ( !$content )
+        if ( empty( $content ) )
             return array();
         
         $attachments = array();
-        
-        $dom = new domDocument;        
-        $dom->loadHTML($content);
+
+        $dom = new domDocument;
+        $dom->loadHTML( $content );
         $dom->preserveWhiteSpace = false;
         
-        // images
-        $images = $dom->getElementsByTagName('img');  
-        if ( $images ) {
+        // images        
+        if ( $images = $dom->getElementsByTagName('img') ) {
             foreach ($images as $image) {
                 $class = $image->getAttribute('class');
                                                 
@@ -427,15 +425,15 @@ class Codepress_Used_Media
 	
 	public static function admin_message($message = "", $type = 'updated')
 	{
-		$GLOBALS['cpum_mesage'] = $message;
-		$GLOBALS['cpum_mesage_type'] = $type;
+		$GLOBALS['cpum_message'] = $message;
+		$GLOBALS['cpum_message_type'] = $type;
 		
 		add_action('admin_notices', array( __CLASS__, 'admin_notice') );
 	}
 	
 	function admin_notice()
 	{
-	    echo '<div class="' . $GLOBALS['cpum_mesage_type'] . '" id="message">'.$GLOBALS['cpum_mesage'].'</div>';
+	    echo '<div class="' . $GLOBALS['cpum_message_type'] . '" id="message">'.$GLOBALS['cpum_message'].'</div>';
 	}
 	
 	/**
